@@ -3,7 +3,7 @@
 source config.conf
 
 DB_LIST_FILE=guachos-$DB_FOLDER-db-list
-target_containers=$(docker ps | grep mysql | awk -F'\\s+' '{print $NF}')
+target_containers=$(docker ps | grep mysql | sed -E "s/.* ([^ ]+)$/\1/")
 
 ensure_dump(){
   target_dump=$1
