@@ -11,26 +11,27 @@ download_dump(){
     exit 1  
   fi
   
-  echo "Seleccione una fecha de los últimos 7 días:"
+  # echo "Seleccione una fecha de los últimos 7 días:"
 
-  for ((i=0; i<=6; i++)); do
-      date=$(date -d "-$i day" +%Y%m%d)
-      echo "$i) $date"
-  done
+  # for ((i=0; i<=6; i++)); do
+  #     date=$(date "-$i day" +%Y%m%d)
+  #     echo "$i) $date"
+  # done
 
-  read -p "Ingrese el número correspondiente a la fecha: " choice
+  # read -p "Ingrese el número correspondiente a la fecha: " choice
 
-  if (( choice >= 0 && choice <= 6 )); then
-      selected_date=$(date -d "-$choice day" +%Y%m%d)
-      echo "Ha seleccionado la fecha: $selected_date"
-  else
-      echo "Opción inválida"
-      exit 1
-  fi
+  # if (( choice >= 0 && choice <= 6 )); then
+  #     selected_date=$(date -d "-$choice day" +%Y%m%d)
+  #     echo "Ha seleccionado la fecha: $selected_date"
+  # else
+  #     echo "Opción inválida"
+  #     exit 1
+  # fi
 
 
   dbFolder=$opt
-  now=$selected_date
+  # now=$selected_date
+  now=`date +%Y%m%d`
   dumpFile=${opt}_$now.sql.gz
   echo "Se va a descargar $dumpFile"
   read -p "¿Estás seguro de continuar? (s/n): " response

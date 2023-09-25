@@ -5,6 +5,54 @@ source config.conf
 DB_LIST_FILE=guachos-$DB_FOLDER-db-list
 target_containers=$(docker ps | grep mysql | sed -E "s/.* ([^ ]+)$/\1/")
 
+function select_file {
+    local directory="$1"
+    local selected_file=""
+
+    # Verificar si el directorio existe y es válido
+    if [[ ! -d "$directory" ]]; then
+        echo "Directorio inválido."
+        return 1
+    fi
+
+    local files=()
+    local i=0
+
+    # Obtener la lista de archivos en el directorio
+    for file in "$directory"/*; do
+        if [[ -f "$file" ]]; then
+            files+=("$file")
+            ((i++))
+        fi
+    done
+
+    # Verificar si no hay archivos disponibles
+    if [[ $i -eq 0 ]]; then
+        echo "No hay archivos disponibles en $directory."
+        return 1
+    fi
+
+    # Mostrar los archivos disponibles
+    echo "Archivos disponibles en $directory:" >&2
+    for ((j=0; j<i; j++)); do
+        echo "$((j+1)). ${files[j]}" >&2
+    done
+
+    read -p "Selecciona un archivo (1-$i): " selection
+
+    # Verificar la selección válida
+    if [[ $selection =~ ^[0-9]+$ && $selection -ge 1 && $selection -le $i ]]; then
+        selected_file="${files[selection-1]}"
+        echo "Has seleccionado: $selected_file" >&2
+    else
+        echo "Selección inválida."
+        return 1
+    fi
+
+    # Devolver el resultado
+    echo "$selected_file"
+}
+
 ensure_dump(){
   target_dump=$1
   if [ -f "$target_dump" ]; then
@@ -115,15 +163,21 @@ do
   fi
 
   dbFolder=$opt
-  now=`date +%Y%m%d`
-  dumpFile=${opt}_$now.sql
-  dumpFile_gz=$dumpFile.gz
   dstFolder=$DUMP_FOLDER/$DB_FOLDER/$dbFolder
-  target_dump=$dstFolder/$dumpFile
-  target_dump_gz=$dstFolder/$dumpFile_gz
-  # Verificar si el archivo existe
 
-  ensure_dump $target_dump && load_dump $target_dump $opt
+  result=$(select_file $dstFolder)
 
-  
+  # Verificar si ocurrió un error o no se seleccionó ningún archivo
+  if [[ $? -ne 0 || -z "$result" ]]; then
+    now=`date +%Y%m%d`
+    dumpFile=${opt}_$now.sql
+    dumpFile_gz=$dumpFile.gz
+    target_dump=$dstFolder/$dumpFile
+    target_dump_gz=$dstFolder/$dumpFile_gz
+    ensure_dump $target_dump && load_dump $target_dump $opt
+  else
+    echo "Resultado: $result"
+    ensure_dump $result && load_dump $result $opt
+  fi
+
 done
