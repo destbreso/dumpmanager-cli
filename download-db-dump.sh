@@ -44,6 +44,9 @@ download_dump(){
       mkdir -p "$dstFolder"
       echo "Directorio creado: $dstFolder"
     fi
+    # Descargar el archivo de S3 y mostrar la barra de progreso basada en el tamaño total del archivo
+    # aws s3 cp s3://$BUCKET/$DB_FOLDER/$dbFolder/$dumpFile - | pv -p $(aws s3 ls -s s3://$BUCKET/$DB_FOLDER/$dbFolder/$dumpFile | awk '{print $3}') > $dstFolder/$dumpFile
+
     aws s3 cp s3://$BUCKET/$DB_FOLDER/$dbFolder/$dumpFile $dstFolder
   else
     echo "Cancelado."
