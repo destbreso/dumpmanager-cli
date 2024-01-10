@@ -2,7 +2,7 @@
 
 source config.conf
 
-DB_LIST_FILE=guachos-$DB_FOLDER-db-list
+DB_LIST_FILE=$MYSQL_FOLDER-db-list
 target_containers=$(docker ps | grep mysql | sed -E "s/.* ([^ ]+)$/\1/")
 
 function select_file {
@@ -78,7 +78,7 @@ ensure_dump(){
           if [[ $response == [sS] ]]; then
             echo "ensure_dump: Continuando..."
             
-            db_downlad=$(bash download-guachos-database-dump.sh $opt)
+            db_downlad=$(bash download-dump-mysql-s3.sh $opt)
             # Verificar el estado de salida
             db_downlad=$?
             # Verificar si el comando se ejecutó correctamente
@@ -120,13 +120,13 @@ load_dump(){
     echo "Se va a utilizar el dump: $target_dump"
     echo "Se va a utilizar el container $target_container"
 
-    # echo "comando: docker exec -i $target_container $DB_FOLDER -uroot -proot localexpv1 < $target_dump"
+    # echo "comando: docker exec -i $target_container $MYSQL_FOLDER -uroot -proot localexpv1 < $target_dump"
     read -p "¿Desea cargar el dump en el container? (s/n): " response
 
     if [[ $response == [sS] ]]; then
       echo "Continuando..."
       
-      docker_load=$(docker exec -i $target_container $DB_FOLDER -uroot -proot -e "CREATE DATABASE IF NOT EXISTS $target_db" && docker exec -i $target_container $DB_FOLDER -uroot -proot $target_db < $target_dump)
+      docker_load=$(docker exec -i $target_container $MYSQL_FOLDER -uroot -proot -e "CREATE DATABASE IF NOT EXISTS $target_db" && docker exec -i $target_container $MYSQL_FOLDER -uroot -proot $target_db < $target_dump)
       # Verificar el estado de salida
       
       docker_load=$?
@@ -163,7 +163,7 @@ do
   fi
 
   dbFolder=$opt
-  dstFolder=$DUMP_FOLDER/$DB_FOLDER/$dbFolder
+  dstFolder=$DUMP_FOLDER/$MYSQL_FOLDER/$dbFolder
 
   result=$(select_file $dstFolder)
 

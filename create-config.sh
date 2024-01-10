@@ -7,9 +7,9 @@ config_file=$BASE_DIR/config.conf
 
 # Definir los campos de configuración en un arreglo
 declare -a fields=(
-  "BUCKET" 
-  "DB_FOLDER" 
+  "BUCKET"
   "DUMP_FOLDER"
+  "MYSQL_FOLDER"
 )
 
 # Función para leer y mostrar la configuración actual

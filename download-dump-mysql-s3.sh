@@ -2,10 +2,10 @@
 
 source config.conf
 
-DB_LIST_FILE=guachos-$DB_FOLDER-db-list
+DB_LIST_FILE=$MYSQL_FOLDER-db-list
 
 download_dump(){
-  opt=$1
+  opt="$1"
   if [[ ! " ${DB_OPTIONS[@]} " =~ " $opt " ]]; then
     echo "Opcion invalida $REPLY"
     exit 1  
@@ -38,16 +38,16 @@ download_dump(){
   
   if [[ $response == [sS] ]]; then
     echo "Continuando..."
-    dstFolder=$DUMP_FOLDER/$DB_FOLDER/$dbFolder
+    dstFolder=$DUMP_FOLDER/$MYSQL_FOLDER/$dbFolder
     if [ ! -d "$dstFolder" ]; then
       # Crear el directorio
       mkdir -p "$dstFolder"
       echo "Directorio creado: $dstFolder"
     fi
     # Descargar el archivo de S3 y mostrar la barra de progreso basada en el tamaño total del archivo
-    # aws s3 cp s3://$BUCKET/$DB_FOLDER/$dbFolder/$dumpFile - | pv -p $(aws s3 ls -s s3://$BUCKET/$DB_FOLDER/$dbFolder/$dumpFile | awk '{print $3}') > $dstFolder/$dumpFile
+    # aws s3 cp s3://$BUCKET/$MYSQL_FOLDER/$dbFolder/$dumpFile - | pv -p $(aws s3 ls -s s3://$BUCKET/$MYSQL_FOLDER/$dbFolder/$dumpFile | awk '{print $3}') > $dstFolder/$dumpFile
 
-    aws s3 cp s3://$BUCKET/$DB_FOLDER/$dbFolder/$dumpFile $dstFolder
+    aws s3 cp s3://$BUCKET/$MYSQL_FOLDER/$dbFolder/$dumpFile $dstFolder
   else
     echo "Cancelado."
   fi

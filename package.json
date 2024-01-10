@@ -1,0 +1,15 @@
+{
+  "name": "db-dumps",
+  "version": "1.0.0",
+  "description": "Primeramente actualizar el la variable `DUMP_FOLDER` en el fichero `config.conf`",
+  "main": "index.js",
+  "scripts": {
+    "configure": "bash create-config.sh",
+    "refresh:mysql": "bash refresh-mysql-db-list.sh mysql",
+    "getdump:mysql:s3": "bash download-dump-mysql-s3.sh",
+    "loaddump:mysql:s3": "bash load-db-dump-to-docker.sh"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

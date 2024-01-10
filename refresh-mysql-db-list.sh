@@ -2,7 +2,13 @@
 
 source config.conf
 
-DB_LIST_FILE=guachos-$DB_FOLDER-db-list
+if [ -z "$1" ]; then
+  echo "Debe proporcionar el directorio de la base de datos como primer argumento."
+  exit 1
+fi
+DB_FOLDER=$1
+
+DB_LIST_FILE=$DB_FOLDER-db-list
 
 # Lista original
 lista=$(aws s3 ls s3://$BUCKET/$DB_FOLDER/)
