@@ -10,6 +10,9 @@ declare -a fields=(
   "BUCKET"
   "DUMP_FOLDER"
   "MYSQL_FOLDER"
+  "MYSQL_HOST"
+  "MYSQL_USER"
+  "MYSQL_PASSWORD"
 )
 
 # Función para leer y mostrar la configuración actual
